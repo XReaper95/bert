@@ -269,12 +269,11 @@ def read_squad_examples(input_file, is_training):
                             "For training, each question should have exactly 1 answer.")
                     if not is_impossible:
                         answer = qa["answers"][0]
-                        orig_answer_text = answer["text"]
+                        orig_answer_text = unidecode.unidecode(answer["text"])
                         answer_offset = answer["answer_start"]
                         answer_length = len(orig_answer_text)
                         start_position = char_to_word_offset[answer_offset]
-                        end_position = char_to_word_offset[answer_offset + answer_length -
-                                                           1]
+                        end_position = char_to_word_offset[answer_offset + answer_length -1]
                         # Only add answers where the text can be exactly recovered from the
                         # document. If this CAN'T happen it's likely due to weird Unicode
                         # stuff so we will just skip the example.
@@ -284,7 +283,8 @@ def read_squad_examples(input_file, is_training):
                         actual_text = " ".join(
                             doc_tokens[start_position:(end_position + 1)])
                         cleaned_answer_text = " ".join(
-                            tokenization.whitespace_tokenize(orig_answer_text))
+                            tokenization.whitespace_tokenize(unidecode.unidecode(orig_answer_text)))
+
                         if actual_text.find(cleaned_answer_text) == -1:
                             tf.logging.warning("Could not find answer: '%s' vs. '%s'",
                                                actual_text, cleaned_answer_text)
