@@ -238,7 +238,7 @@ def read_squad_examples(input_file, is_training):
     examples = []
     for entry in input_data:
         for paragraph in entry["paragraphs"]:
-            paragraph_text = unidecode.unidecode(paragraph["context"])
+            paragraph_text = paragraph["context"]
             doc_tokens = []
             char_to_word_offset = []
             prev_is_whitespace = True
@@ -269,11 +269,11 @@ def read_squad_examples(input_file, is_training):
                             "For training, each question should have exactly 1 answer.")
                     if not is_impossible:
                         answer = qa["answers"][0]
-                        orig_answer_text = unidecode.unidecode(answer["text"])
+                        orig_answer_text = answer["text"]
                         answer_offset = answer["answer_start"]
                         answer_length = len(orig_answer_text)
                         start_position = char_to_word_offset[answer_offset]
-                        end_position = char_to_word_offset[answer_offset + answer_length -1]
+                        end_position = char_to_word_offset[answer_offset + answer_length - 1]
                         # Only add answers where the text can be exactly recovered from the
                         # document. If this CAN'T happen it's likely due to weird Unicode
                         # stuff so we will just skip the example.
