@@ -28,6 +28,7 @@ import optimization
 import tokenization
 import six
 import tensorflow as tf
+import unidecode
 
 flags = tf.flags
 
@@ -237,7 +238,7 @@ def read_squad_examples(input_file, is_training):
     examples = []
     for entry in input_data:
         for paragraph in entry["paragraphs"]:
-            paragraph_text = paragraph["context"]
+            paragraph_text = unidecode.unidecode(paragraph["context"])
             doc_tokens = []
             char_to_word_offset = []
             prev_is_whitespace = True
