@@ -15,4 +15,5 @@ def convert_model_to_tflite(model_path, lite_model_path, reduce_model_size):
 
 if __name__ == '__main__':
 	model_path = 'bert_qa_pt.tflite'
-	convert_model_to_tflite('/home/luis_ernesto951008/bert/saved_model/1589825625', model_path, True)
+	model_out = input("Enter model output path: ")
+	convert_model_to_tflite('model_out', model_path, True)
