@@ -588,6 +588,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     (start_logits, end_logits) = (unstacked_logits[0], unstacked_logits[1])
 
+    start_logits.name = 'start_logits'
+    end_logits.name = 'end_logits'
+
     return (start_logits, end_logits)
 
 
