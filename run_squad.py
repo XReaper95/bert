@@ -1279,23 +1279,17 @@ def main(_):
     estimator._export_to_tpu = False  ## !!important to add this
     estimator.export_saved_model(
         export_dir_base='saved_model',
+        serving_input_receiver_fn=serving_input_receiver_fn
     )
 
 
-# def serving_input_receiver_fn():
-#     feature_spec = {
-#         "unique_ids": tf.FixedLenFeature([], tf.int64),
-#         "input_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-#         "input_mask": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-#         "segment_ids": tf.FixedLenFeature([FLAGS.max_seq_length], tf.int64),
-#     }
-#
-#     serialized_tf_example = tf.placeholder(dtype=tf.string,
-#                                            shape=[FLAGS.train_batch_size],
-#                                            name='input_example_tensor')
-#     receiver_tensors = {'examples': serialized_tf_example}
-#     features = tf.parse_example(serialized_tf_example, feature_spec)
-#     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+def serving_input_receiver_fn():
+    features = {
+        "input_ids": tf.placeholder(shape=[1, FLAGS.max_seq_length], dtype=tf.int32),
+        "input_mask": tf.placeholder(shape=[1, FLAGS.max_seq_length], dtype=tf.int32),
+        "segment_ids": tf.placeholder(shape=[1, FLAGS.max_seq_length], dtype=tf.int32)
+    }
+    return tf.estimator.export.ServingInputReceiver(features, features)
 
 
 if __name__ == "__main__":
