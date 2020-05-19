@@ -14,6 +14,6 @@ def convert_model_to_tflite(model_path, lite_model_path, reduce_model_size):
 
 
 if __name__ == '__main__':
-	model_path = 'bert_qa_pt.tflite'
-	model_out = input("Enter model output path: ")
-	convert_model_to_tflite(model_path, 'model_out', True)
+	model_out = 'bert_qa_pt.tflite'
+	model_path = input("Enter model output path: ")
+	convert_model_to_tflite(model_path, model_out, True)
