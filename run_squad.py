@@ -269,7 +269,7 @@ def read_squad_examples(input_file, is_training):
                             "For training, each question should have exactly 1 answer.")
                     if not is_impossible:
                         answer = qa["answers"][0]
-                        orig_answer_text = unidecode.unidecode(answer["text"])
+                        orig_answer_text = answer["text"]
                         answer_offset = answer["answer_start"]
                         answer_length = len(orig_answer_text)
                         start_position = char_to_word_offset[answer_offset]
@@ -282,8 +282,11 @@ def read_squad_examples(input_file, is_training):
                         # guaranteed to be preserved.
                         actual_text = " ".join(
                             doc_tokens[start_position:(end_position + 1)])
+                        actual_text = unidecode.unidecode(actual_text)
+
                         cleaned_answer_text = " ".join(
-                            tokenization.whitespace_tokenize(unidecode.unidecode(orig_answer_text)))
+                            tokenization.whitespace_tokenize(orig_answer_text))
+                        cleaned_answer_text = unidecode.unidecode(cleaned_answer_text)
 
                         if actual_text.find(cleaned_answer_text) == -1:
                             tf.logging.warning("Could not find answer: '%s' vs. '%s'",
