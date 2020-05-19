@@ -600,7 +600,7 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
         for name in sorted(features.keys()):
             tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
-        unique_ids = features["unique_ids"]
+        # unique_ids = features["unique_ids"]
         input_ids = features["input_ids"]
         input_mask = features["input_mask"]
         segment_ids = features["segment_ids"]
@@ -670,7 +670,6 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
                 scaffold_fn=scaffold_fn)
         elif mode == tf.estimator.ModeKeys.PREDICT:
             predictions = {
-                "unique_ids": unique_ids,
                 "start_logits": start_logits,
                 "end_logits": end_logits,
             }
