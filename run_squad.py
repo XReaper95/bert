@@ -1275,20 +1275,37 @@ def main(_):
                           FLAGS.do_lower_case, output_prediction_file,
                           output_nbest_file, output_null_log_odds_file)
 
+    squad_serving_input_fn = (build_squad_serving_input_fn(FLAGS.max_seq_length))
     estimator._export_to_tpu = False  ## !!important to add this
     estimator.export_saved_model(
         export_dir_base='saved_model',
-        serving_input_receiver_fn=serving_input_receiver_fn
+        serving_input_receiver_fn=squad_serving_input_fn
     )
 
 
-def serving_input_receiver_fn():
-    features = {
-        "input_ids": tf.placeholder(shape=[1, FLAGS.max_seq_length], dtype=tf.int32),
-        "input_mask": tf.placeholder(shape=[1, FLAGS.max_seq_length], dtype=tf.int32),
-        "segment_ids": tf.placeholder(shape=[1, FLAGS.max_seq_length], dtype=tf.int32)
-    }
-    return tf.estimator.export.ServingInputReceiver(features, features)
+def build_squad_serving_input_fn(seq_length):
+    """Builds a serving input fn for raw images."""
+
+    def _seq_serving_input_fn():
+        """Serving input fn for raw images."""
+        input_ids = tf.placeholder(
+            shape=[1, seq_length], name="input_ids", dtype=tf.int32)
+        input_mask = tf.placeholder(
+            shape=[1, seq_length], name="input_mask", dtype=tf.int32)
+        segment_ids = tf.placeholder(
+            shape=[1, seq_length], name="segment_ids", dtype=tf.int32)
+
+        def _preprocess(input_ids, input_mask, segment_ids):
+            return dict(
+                input_ids=input_ids, input_mask=input_mask, segment_ids=segment_ids)
+
+        return tf.estimator.export.ServingInputReceiver(
+            _preprocess(input_ids, input_mask, segment_ids),
+            dict(
+                input_ids=input_ids, input_mask=input_mask,
+                segment_ids=segment_ids))
+
+    return _seq_serving_input_fn
 
 
 if __name__ == "__main__":
